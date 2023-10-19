@@ -1,0 +1,75 @@
+---
+title: "Downloading FASTQ"
+author: "Vicent Caselles Ballester"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Instalació de SRAdb
+```{r}
+# BiocManager::install(c("SRAdb"))
+library(SRAdb)
+```
+
+# Descarreguem el fitxer SQLite que té informació sobre la base de dades?
+
+He hagut d'incrementar la opció timeout de download.file, ja que no em donava el temps per a descarregar l'arxiu que m'interessa. Bastant horrible tot plegat.
+```{r}
+sqlfile <-'SRAmetadb.sqlite'
+if(!file.exists('SRAmetadb.sqlite')) sqlfile <<- getSRAdbFile()
+sra_con <- dbConnect(SQLite(),sqlfile)
+```
+
+*********************************
+
+# A partir d'aquí el codi no funciona.
+
+# Ens connectem a la base de dades i demanem info sobre una entrada específica
+```{r}
+# study_id <- "SRP045496"
+# sra_table <- dplyr::tbl(sra_con, "sra")
+# study_table <- dplyr::tbl(sra_con, "study")
+# sra_df <- sra_table %>%
+#   # Filter to the study_id we are looking for
+#   dplyr::filter(study_accession == study_id) %>%
+#   # Inner join to the study table that has more specific info about the study
+#   dplyr::inner_join(study_table, by = "study_accession") %>%
+#   # We need to do this so the dbplyr queries are transformed to a data frame
+#   as.data.frame()
+# 
+# 
+# sraInf <- getSRAinfo("SRR1972739",sra_con, sraType="sra")
+# sraInf
+```
+
+
+# Ens descarreguem els fitxers SRA
+```{r}
+# sapply(sraInf$run, function(x) try(getSRAfile(x,sra_con, fileType="sra"),silent=TRUE))
+```
+
+# Extracció dels fitxers fastq
+A continuació extrec els fastq files. Això ho faig amb el següent codi de bash:
+```
+for sra in *.sra
+do
+fastq-dump $sra
+done
+```
+
+# Llegim els anàlisi de qualitat
+També amb bash
+````
+for fq in *.fastq
+do
+fastqc $fq
+done
+````
+
+La resta del tutorial no pertoca (i ja m'he descarregat 294014u8921 gb de dades així que ho deixo aquí).
+
+Referència: https://bioinformatics-core-shared-training.github.io/RNAseq-R/getting-raw-reads.nb.html#download_the_set_of_sra_files

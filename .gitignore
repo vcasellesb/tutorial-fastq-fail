@@ -1,0 +1,7 @@
+.DS_Store
+*.Rproj*
+*.gz
+*fastq
+prova/
+.Rhistory
+*.sqlite

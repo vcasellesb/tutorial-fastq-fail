@@ -1,0 +1,39 @@
+Aportació Vicent:
+
+1) Primer de tot, intentaré definir la seqüenciació Sanger de memòria i amb les meves paraules. Incubes el teu DNA que vols sequenciar, nucleòtids normals i nucleòtids especials marcat fluorescentment (i més coses, primers, DNA pol, etc.), aquests ultims en una proporció molt menor als normals. S'anirà sintetitzant la molècula complementària al teu DNA, posant nucleòtids normals fins que la DNApol en posarà un d'especial. Aquest nucleòtid termina la replicació.
+
+Per probabilitat, s'hauran sintetitzat totes les longituds de cadena complementària a la que vols sintetitzar, cada una acabant amb un nucleòtid fluorescent diferent. Llavors es fa correr la mostra en un gel d'electroforesi, i reconstrueixes la cadena original a partir dels resultats d'aquesta (les cadenes més curtes, corresponents als nucleòtids inicials - again, recordar que corresponen a la reverse complementary de la seqüencia a sequenciar-arribaran més lluny).
+
+Notes que he pensat a posteriori:
+Hi ha manual sanger sequencing, on a es separa el procés en 4 instàncies (una 	per a cada nucleòtid. Per altra banda existeix el automated Sanger sequencing, 	on la reacció es duu a terme al mateix recipient (font: https://www.sigmaaldrich.com/ES/es/technical-documents/protocol/genomics/sequencing/sanger-sequencing).
+
+***************
+
+Respecte a les avantatges i desaventatges del NGS, he trobat un article que m'ha semblat interessant: https://www.frontiersin.org/articles/10.3389/fbioe.2023.982111/full
+
+A més de parlar breument de quines són les avantatges i desavantatges, explora mètodes per a superar les segones. Com a avantatges, tenim la velocitat de sequenciació i l'abaratiment d'aquest procés. Com a desavantatge, tenim la baixa read length i la precisió de la sequenciació. El paper fa referència a un ~1% de bases mal detectades. Els motius són: base misincorporations and allelic frequency skewing durant l'amplificació amb PCR, i altres errors que sorgeixen durant l'amplifiació en cluster, el cycle sequencing i l'anàlisi d'imatge posterior.
+
+Una de les principals conseqüències d'aquest error és que, per a compensar aquests errors, és duu a terme una high-coverage assembly (que entenc que vol dir que es duen a terme moltes sequenciacions en paralel de la mateixa regió), fet que fa que les mutacions siguin tractades com a errors.
+
+Aquest punt m'ha interessat, així que vaig a explorar-lo. No acabo d'entendre el perquè d'aquesta menor precisió de NGS, fet que afecta a les mutacions. Referent a aquest punt, he trobat les següents fonts: 
+* Tesi doctoral de la UPV on el doctorand (ja doctor) explica les limitacions de NGS sequencer per sequencer (Illumina, Roche...). Molta profunditat i detall. Molt recomanat. Exemple, "Mismatches are prevalent in Illumina and SoLID, while indels constitute the main error type in Roche 454". En quant a les màquines d'Illumina, la majoria d'errors venen deguts a dos fenòmens: cross-talk (overlap in signals of the dye emission frequencies), i phasing/dephasing (error in an earlier cycle may propagate to and affect later cycles)(font: https://doi.org/10.1186/1471-2105-14-367).  Tesi doctoral: https://riunet.upv.es/bitstream/handle/10251/67630/Alic%20-%20Improved%20Error%20Correction%20of%20NGS%20Data.pdf;sequence=1
+
+
+2) En quant a Galaxy, aquest tutorial amb FASTQ ja l'havia realitzat a l'assignatura d'Eines per a la Bioinformàtica, i la veritat és que no em va agradar massa i segueixo amb la mateixa opinió. Personalment, em diverteix i motiva aprendre a programar i realment entendre com funcionen les eines informàtiques per a l'anàlisi genòmic. M'agrada entendre els detalls i plataformes com Galaxy abstrauen molts d'aquests específics. Tot i això, per a gent per exemple que no està massa familiaritzada amb els ordinadors i prefereix una interfaç més user-friendly i simple, realment és genial. Tot i això, té limitacions com la dependència a una connexió a internet i que té una menor versatilitat que realitzar els anàlisi localment. 
+
+3) Steps per a descarregar FASTQ. Segueixo el tutorial: https://bioinformatics-core-shared-training.github.io/RNAseq-R/getting-raw-reads.nb.html
+
+1- Actualitzo R i Rstudio
+2- Instalo Bioconductor
+3- Instalo SRAdb
+
+Després, la resta està al github : insertar link. AIXO NO HA FUNCIONAT. Sospito que és perquè el tutorial és antic. A l'hora de llegir el id SRR no el trobava. He hagut de fer el següent, tret del següent post: https://www.biostars.org/p/111040/ :
+
+Descarregar sratoolkit.3.0.7-mac64 (https://github.com/ncbi/sra-tools), i fer servir els següents commands:
+prefetch SRX317824
+
+Això m'ho ha descarregat al cwd. Després:
+
+fastq-dump --outdir ./fastadump --split-files SRR925817
+
+Això m'ha descarregat 2 fitxers fastq, cada un amb >2 GB. Un corresponent a el R1, l'altre a R2. Veure foto:
